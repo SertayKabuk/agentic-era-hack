@@ -240,6 +240,22 @@ async def serve_frontend_root() -> FileResponse:
     )
 
 
+@app.get("/{asset_file}")
+async def serve_public_assets(asset_file: str) -> FileResponse:
+    """Serve public assets (images, videos) from the build directory."""
+    # Only serve specific file types to avoid conflicts
+    allowed_extensions = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.mp4', '.webm', '.ico'}
+    file_path = Path(asset_file)
+    
+    if file_path.suffix.lower() in allowed_extensions:
+        asset_path = frontend_build_dir / asset_file
+        if asset_path.exists() and asset_path.is_file():
+            return FileResponse(str(asset_path))
+    
+    # If not a valid asset, fall through to SPA routing
+    raise HTTPException(status_code=404, detail="Asset not found")
+
+
 @app.get("/{full_path:path}")
 async def serve_frontend_spa(full_path: str) -> FileResponse:
     """Catch-all route to serve the frontend for SPA routing.
