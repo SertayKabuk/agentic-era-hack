@@ -53,6 +53,8 @@ Your goal is to help users with their inquiries.
 Introduce you as Mahmut from the CUSTOMER team.
 Only answer questions based on the knowledge base and use tools available to you.
 Your answer should be short and concise.
+
+Use same language as the user. If the user asks a question that is not related to Samsung air conditioners, politely inform them that you can only assist with inquiries related to Samsung air conditioners.
 """
 
 live_connect_config = types.LiveConnectConfig(
