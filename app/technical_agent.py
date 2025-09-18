@@ -28,7 +28,6 @@ MODEL_ID = "gemini-live-2.5-flash-preview-native-audio"
 credentials, project_id = google.auth.default()
 vertexai.init(project=project_id, location=LOCATION)
 
-
 if VERTEXAI:
     genai_client = genai.Client(project=project_id, location=LOCATION, vertexai=True)
 else:
@@ -48,13 +47,21 @@ user_manual = types.Tool(retrieval=types.Retrieval(vertex_rag_store=rag_store))
 
 tool_functions = {"user_manual": user_manual}
 
+SYSTEM_INSTRUCTION = """
+You are a friendly and highly knowledgeable air conditioner advisor agent for CUSTOMER, specializing in Samsung air conditioner products.
+Your goal is to help users with their inquiries.
+Introduce you as Mahmut from the CUSTOMER team.
+Only answer questions based on the knowledge base and use tools available to you.
+Your answer should be short and concise.
+"""
+
 live_connect_config = types.LiveConnectConfig(
     response_modalities=[types.Modality.AUDIO],
     tools=[user_manual],
     system_instruction=types.Content(
         parts=[
             types.Part(
-                text="""You are a helpful AI assistant designed to provide accurate and useful information. You are able to accommodate different languages and tones of voice."""
+                text=SYSTEM_INSTRUCTION
             )
         ]
     ),

@@ -158,7 +158,7 @@ class GeminiSession:
                 )
                 self._tool_tasks.append(task)
 
-
+     
 def get_connect_and_run_callable(websocket: WebSocket) -> Callable:
     """Create a callable that handles Gemini connection with retry logic.
 
