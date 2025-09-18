@@ -1,0 +1,19 @@
+.corner-logo {
+  position: fixed;
+  top: 14px;
+  left: 16px;
+  z-index: 3; /* above app content, below dialogs if any */
+  pointer-events: none; /* don't block clicks */
+}
+
+.corner-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,0.35));
+  opacity: 0.95;
+}
+
+@media (max-width: 600px) {
+  .corner-logo { top: 10px; left: 12px; width: 110px !important; }
+}

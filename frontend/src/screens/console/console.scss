@@ -1,0 +1,167 @@
+.console-screen {
+  --surface: #ffffff;
+  --stroke: rgba(0,0,0,0.08);
+  --text: #111111;
+  --text-dim: #6b6f75;
+
+  max-width: 980px;
+  width: 100%;
+  min-width: 680px; /* keep a reasonable minimum width */
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-rows: 1fr auto; /* chat + dock */
+  gap: 16px;
+  color: var(--text);
+  /* Ensure screen does not shrink too small */
+  min-height: 85vh;
+
+  .connection {
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.9);
+    
+    .expander {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--stroke);
+      cursor: pointer;
+    }
+
+    .content { padding: 12px 16px; display: grid; gap: 10px; }
+    .group label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+    .group input { width: 100%; padding: 8px 10px; border: 1px solid var(--stroke); background: var(--Neutral-15); color: var(--text); border-radius: 8px; }
+  }
+
+  /* Chat panel */
+  .chat-panel {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 0;
+    border: 1px solid var(--stroke);
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+    width: min(920px, 92%);
+    margin: 0 auto; /* center horizontally */
+    min-height: 60vh; /* bigger chat */
+    max-height: 75vh;
+
+    .chat-heading {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .chat-status { font-size: 12px; color: #888; }
+    .chat-status.on { color: #0d9c53; }
+    .chat-list { overflow: auto; padding: 12px; background: #fff; color: #111; min-height: 50vh; }
+  }
+
+  /* Bottom control dock */
+  .control-dock {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* container ignores, buttons enable */
+    z-index: 5; /* stay above avatar */
+    width: 100%;
+  }
+  .control-dock .dock-pill {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--stroke);
+    border-radius: 9999px;
+    padding: 10px 16px;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    gap: 12px;
+  }
+  .control-dock .dock-btn {
+    pointer-events: auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f8f9fb;
+    border: 1px solid var(--stroke);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    cursor: pointer;
+  }
+  .control-dock .dock-btn.primary { background: #ffffff; }
+  .control-dock .dock-btn.danger { background: #fff0f0; border-color: rgba(255,0,0,0.2); }
+  .control-dock .dock-btn.active { outline: 2px solid rgba(31,148,255,0.25); }
+
+  /* Right slide-in drawer */
+  .connection-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.28);
+    z-index: 9;
+  }
+  .connection-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    max-width: 92vw;
+    height: 100vh;
+    background: #fff;
+    border-left: 1px solid var(--stroke);
+    box-shadow: -12px 0 30px rgba(0,0,0,0.18);
+    transform: translateX(100%);
+    opacity: 0.98;
+    transition: transform 220ms ease, box-shadow 220ms ease;
+    z-index: 10;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+  .connection-drawer.open { transform: translateX(0); }
+  .connection-drawer .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--stroke);
+  }
+  .connection-drawer .drawer-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111;
+  }
+  .connection-drawer .drawer-header .close {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: #6b6f75;
+  }
+  .connection-drawer .drawer-content {
+    padding: 16px;
+    overflow: auto;
+  }
+  .connection-drawer .group { margin-bottom: 12px; }
+  .connection-drawer label { display: block; font-size: 12px; color: #6b6f75; margin-bottom: 4px; }
+  .connection-drawer input {
+    width: 100%;
+    background: #f3f5f7;
+    border: 1px solid var(--stroke);
+    color: #111;
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+}

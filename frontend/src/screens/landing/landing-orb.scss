@@ -1,0 +1,38 @@
+.landing-orb-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+
+.landing-orb-screen .center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+.landing-orb-screen .chip-dotted { position: absolute; }
+.landing-orb-screen .chip-dotted.right {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate(calc(var(--orb-size, 300px)/2 + var(--chip-gap, 40px)), 0);
+}
+.landing-orb-screen .chip-dotted.left {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate(calc(-1 * var(--orb-size, 300px)/2 - var(--chip-gap, 40px)), 0);
+}
+.landing-orb-screen .chip-dotted {
+  opacity: 0;
+  transition: opacity 220ms ease; 
+  pointer-events: auto;
+}
+
+.landing-orb-screen .center:hover .chip-dotted {
+  opacity: 1;
+}

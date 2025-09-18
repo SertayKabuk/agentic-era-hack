@@ -1,0 +1,108 @@
+.talking-avatar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: #1a1e24;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  transition: left 400ms ease, top 400ms ease, transform 400ms ease, opacity 220ms ease;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.talking-avatar .video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: brightness(1) contrast(1.03) saturate(1.05);
+}
+
+.console-screen.mode-chat .talking-avatar {
+  left: auto;
+  right: 70px;
+  top: 40%;
+  transform: translate(0, -50%);
+  opacity: 1;
+}
+
+.talking-avatar::before {
+  content: "";
+  position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.65), inset 0 0 30px rgba(255,255,255,0.25);
+  pointer-events: none;
+}
+
+.talking-avatar .photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 50%;
+  filter: saturate(105%) contrast(102%);
+}
+
+.talking-avatar .wave { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.talking-avatar .wave {
+  opacity: 0;
+  transform: scale(0.85);
+  box-shadow: 0 0 0 0 rgba(90,127,255,0.28);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.talking-avatar .wave.w1 { box-shadow: 0 0 0 0 rgba(90,127,255,0.32); }
+.talking-avatar .wave.w2 { box-shadow: 0 0 0 0 rgba(157,187,255,0.22); }
+.talking-avatar .wave.w3 { box-shadow: 0 0 0 0 rgba(157,187,255,0.16); }
+
+.talking-avatar.speaking .wave {
+  opacity: 1;
+  animation: ripple 1.8s ease-out infinite;
+}
+.talking-avatar.speaking .wave.w2 { animation-delay: 0.45s; }
+.talking-avatar.speaking .wave.w3 { animation-delay: 0.9s; }
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.85);
+    box-shadow: 0 0 0 0 rgba(90,127,255,0.35);
+  }
+  60% {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 24px rgba(90,127,255,0);
+  }
+  100% {
+    transform: scale(1.55);
+    box-shadow: 0 0 0 0 rgba(90,127,255,0);
+  }
+}
+
+/* edge ring with corner pulses */
+.talking-avatar .edge {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(46,134,255,0) 0deg 35deg,
+    rgba(46,134,255,0.6) 35deg 38deg
+  );
+  mask: radial-gradient(circle, transparent calc(100% - 14px), #000 calc(100% - 0px));
+  -webkit-mask: radial-gradient(circle, transparent calc(100% - 14px), #000 calc(100% - 0px));
+}
+.talking-avatar.speaking .edge { animation: spin 2.8s linear infinite; opacity: 1; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Chat panel visibility transition while switching modes */
+.console-screen .chat-panel { opacity: 0; transform: translateY(6px); transition: opacity 260ms ease, transform 260ms ease; pointer-events: none; }
+.console-screen.mode-chat .chat-panel { opacity: 1; transform: translateY(0); pointer-events: auto; }
+/* removed sheen */
