@@ -66,7 +66,7 @@ google-cloud-aiplatform[adk,agent-engines,evaluation]
 
 ### 2. Update RAG Corpus
 
-Edit `app/text_agents/technical_service_text_agent.py` and update the RAG corpus ID:
+Edit `app/technical_services_text_agent/technical_service_text_agent.py` and update the RAG corpus ID:
 
 ```python
 ask_vertex_retrieval = VertexAiRagRetrieval(
@@ -88,7 +88,7 @@ The agent automatically detects your Google Cloud project from Application Defau
 Deploy the agent to Google Agent Engine using the following command:
 
 ```bash
-uv run python .\app\text_agents\agent_engine_app.py
+uv run python .\app\technical_services_text_agent\agent_engine_app.py
 ```
 
 ### Deployment Options
@@ -96,7 +96,7 @@ uv run python .\app\text_agents\agent_engine_app.py
 You can customize the deployment with additional parameters:
 
 ```bash
-uv run python .\app\text_agents\agent_engine_app.py \
+uv run python .\app\technical_services_text_agent\agent_engine_app.py \
   --project YOUR_PROJECT_ID \
   --location us-central1 \
   --agent-name my-technical-agent \
@@ -129,7 +129,7 @@ After successful deployment, the script will:
 After deployment, use the provided client to interact with your deployed agent:
 
 ```bash
-uv run python .\app\text_agents\technical_service_text_agent_client.py
+uv run python .\app\technical_services_text_agent\technical_service_text_agent_client.py
 ```
 
 ### Client Code Example

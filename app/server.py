@@ -30,7 +30,12 @@ from google.genai.types import LiveServerToolCall
 from pydantic import BaseModel
 from websockets.exceptions import ConnectionClosedError
 
+# Google ADK imports for proper agent usage
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+
 from app.technical_agent import MODEL_ID, genai_client, live_connect_config, tool_functions
+from app.turkish_airlines_text_agent.turkish_airlines_text_agent import root_agent
 
 app = FastAPI()
 app.add_middleware(
@@ -51,9 +56,23 @@ if frontend_build_dir.exists():
         StaticFiles(directory=str(frontend_build_dir / "static")),
         name="static",
     )
-logging_client = google_cloud_logging.Client()
-logger = logging_client.logger(__name__)
+
+# Configure logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Google Cloud logging client for structured logs
+try:
+    gcp_logging_client = google_cloud_logging.Client()
+    gcp_logger = gcp_logging_client.logger(__name__)
+except Exception:
+    # Fallback if Google Cloud logging is not available
+    gcp_logger = None
+
+# Setup Turkish Airlines agent with proper session management
+APP_NAME = "turkish_airlines_app"
+session_service = InMemorySessionService()
+turkish_airlines_runner = Runner(agent=root_agent, app_name=APP_NAME, session_service=session_service)
 
 
 class GeminiSession:
@@ -94,9 +113,12 @@ class GeminiSession:
                 elif "setup" in data:
                     self.run_id = data["setup"]["run_id"]
                     self.user_id = data["setup"]["user_id"]
-                    logger.log_struct(
-                        {**data["setup"], "type": "setup"}, severity="INFO"
-                    )
+                    # Log setup info to both standard and Google Cloud logging
+                    logger.info(f"Setup: {data['setup']}")
+                    if gcp_logger:
+                        gcp_logger.log_struct(
+                            {**data["setup"], "type": "setup"}, severity="INFO"
+                        )
                 else:
                     logging.warning(f"Received unexpected input from client: {data}")
             except ConnectionClosedError as e:
@@ -224,8 +246,73 @@ def collect_feedback(feedback: Feedback) -> dict[str, str]:
     Returns:
         Success message
     """
-    logger.log_struct(feedback.model_dump(), severity="INFO")
+    # Log to standard logging
+    logger.info(f"Feedback received: {feedback.model_dump()}")
+    # Log to Google Cloud logging if available
+    if gcp_logger:
+        gcp_logger.log_struct(feedback.model_dump(), severity="INFO")
     return {"status": "success"}
+
+
+class ChatMessage(BaseModel):
+    """Represents a chat message."""
+    message: str
+    user_id: str | None = None
+
+
+@app.post("/api/turkish-airlines/chat")
+async def turkish_airlines_chat(chat_message: ChatMessage) -> dict[str, str]:
+    """Handle chat requests to Turkish Airlines agent.
+    
+    Args:
+        chat_message: The chat message data
+        
+    Returns:
+        Response from the Turkish Airlines agent
+    """
+    try:
+        # Create or get session for the user
+        user_id = chat_message.user_id or "default_user"
+        session_id = f"session_{user_id}"
+        
+        # Ensure session exists (async)
+        try:
+            session = await session_service.get_session(app_name=APP_NAME, user_id=user_id, session_id=session_id)
+            if session is None:
+                session = await session_service.create_session(app_name=APP_NAME, user_id=user_id, session_id=session_id)
+        except Exception:
+            # If get_session fails, create a new one
+            session = await session_service.create_session(app_name=APP_NAME, user_id=user_id, session_id=session_id)
+        
+        # Create content from user message
+        content = types.Content(role='user', parts=[types.Part(text=chat_message.message)])
+        
+        # Run the agent using async method
+        events = []
+        async for event in turkish_airlines_runner.run_async(user_id=user_id, session_id=session_id, new_message=content):
+            events.append(event)
+        
+        response_text = ""
+        for event in events:
+            if event.is_final_response() and event.content:
+                # Extract text from all parts
+                for part in event.content.parts:
+                    if hasattr(part, 'text') and part.text:
+                        response_text += part.text
+        
+        return {
+            "status": "success",
+            "response": response_text if response_text else "No response from agent",
+            "user_id": chat_message.user_id
+        }
+    except Exception as e:
+        # Log error using standard logging
+        logger.error(f"Error in Turkish Airlines chat: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e),
+            "user_id": chat_message.user_id
+        }
 
 
 @app.get("/")

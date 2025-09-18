@@ -18,6 +18,7 @@ import { useState } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import ConsoleScreen from "./screens/console/ConsoleScreen";
+import ChatScreen from "./screens/chat/ChatScreen";
 import BackgroundVideo from "./shared/ui/BackgroundVideo";
 import LandingOrbScreen from "./screens/landing/LandingOrbScreen";
 import TopNav from "./shared/ui/TopNav";
@@ -32,6 +33,7 @@ function App() {
   const [serverUrl, setServerUrl] = useState<string>(defaultUri);
   const [userId, setUserId] = useState<string>("user1");
   const [showConsole, setShowConsole] = useState<boolean>(false);
+  const [showChat, setShowChat] = useState<boolean>(false);
 
   return (
     <div className="App">
@@ -50,8 +52,19 @@ function App() {
                   onUserIdChange={setUserId}
                   onExit={() => setShowConsole(false)}
                 />
+              ) : showChat ? (
+                <ChatScreen
+                  serverUrl={serverUrl}
+                  userId={userId}
+                  onServerUrlChange={setServerUrl}
+                  onUserIdChange={setUserId}
+                  onExit={() => setShowChat(false)}
+                />
               ) : (
-                <LandingOrbScreen onEnter={() => setShowConsole(true)} onEnterDemo={() => setShowConsole(true)} />
+                <LandingOrbScreen 
+                  onEnter={() => setShowConsole(true)} 
+                  onEnterDemo={() => setShowChat(true)} 
+                />
               )}
             </div>
           </main>
