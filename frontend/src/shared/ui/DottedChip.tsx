@@ -71,7 +71,7 @@ export default function DottedChip({
 export function ConsoleScreenDotted(props: Omit<DottedChipProps, "label" | "icon">) {
   return (
     <DottedChip
-      label="Goods Support"
+      label="Samsung Air Conditioner Assistant"
       icon="inventory_2"   
       {...props}
     />

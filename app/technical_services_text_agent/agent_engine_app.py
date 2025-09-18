@@ -29,7 +29,7 @@ from opentelemetry.sdk.trace import TracerProvider, export
 from vertexai import agent_engines
 from vertexai.preview.reasoning_engines import AdkApp
 
-from app.text_agents.technical_service_text_agent import technical_service_text_agent
+from app.technical_services_text_agent.technical_service_text_agent import technical_service_text_agent
 from app.utils.gcs import create_bucket_if_not_exists
 from app.utils.tracing import CloudTraceLoggingSpanExporter
 from app.utils.typing import Feedback

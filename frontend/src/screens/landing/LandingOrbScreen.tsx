@@ -18,7 +18,7 @@ export default function LandingOrbScreen({ onEnter, onEnterDemo }: LandingOrbScr
         <DottedOrb
           size={300}
           accentColor="#5a7fff"
-          label="Customer Care Agents"
+          label="Customer Support Agents"
           description="Speak with a support agent for quick assistance and problem resolution."
         />
         <ConsoleScreenDotted
