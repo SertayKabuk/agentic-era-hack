@@ -30,7 +30,7 @@ from google.genai.types import LiveServerToolCall
 from pydantic import BaseModel
 from websockets.exceptions import ConnectionClosedError
 
-from .agent import MODEL_ID, genai_client, live_connect_config, tool_functions
+from app.technical_agent import MODEL_ID, genai_client, live_connect_config, tool_functions
 
 app = FastAPI()
 app.add_middleware(
@@ -265,4 +265,4 @@ async def serve_frontend_spa(full_path: str) -> FileResponse:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("app.server:app", host="0.0.0.0", port=8000)
