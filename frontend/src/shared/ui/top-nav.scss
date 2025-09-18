@@ -1,0 +1,39 @@
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  z-index: 5;
+  color: #ffffff;
+}
+
+.top-nav .nav-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 16px;
+}
+
+.top-nav .brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.top-nav .brand-logo {
+  width: 200px !important;
+  height: 200px !important;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+}
+
+.top-nav .brand-name {
+  color: #ffffff;
+  font-weight: 500;
+  display: inline-block;
+  font-size: 20px;
+  margin-left: 0px;
+  margin-bottom: 2rem;
+  user-select: none;
+}

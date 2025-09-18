@@ -1,0 +1,27 @@
+.background-video {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* Keep behind app content */
+  pointer-events: none;
+}
+
+.background-video .bgv-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: var(--bgv-opacity, 0.5);
+  filter: saturate(105%);
+}
+
+.background-video .bgv-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, var(--bgv-dot-alpha, 0.08)) 1px,
+    transparent 1px
+  );
+  background-size: var(--bgv-dot-size, 12px) var(--bgv-dot-size, 12px);
+}
+

@@ -20,17 +20,14 @@ import { RiSidebarFoldLine, RiSidebarUnfoldLine } from "react-icons/ri";
 import Select from "react-select";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { useLoggerStore } from "../../utils/store-logger";
-import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
-import { useScreenCapture } from "../../hooks/use-screen-capture";
-import { useWebcam } from "../../hooks/use-webcam";
+// Video streaming features removed per requirements
 import { AudioRecorder } from "../../utils/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import Logger, { LoggerFilterType } from "../logger/Logger";
 import "./side-panel.scss";
 
+// Keep only "All" option
 const filterOptions = [
-  { value: "conversations", label: "Conversations" },
-  { value: "tools", label: "Tool Use" },
   { value: "none", label: "All" },
 ];
 
@@ -45,26 +42,7 @@ export type SidePanelProps = {
   onUserIdChange?: (userId: string) => void;
 };
 
-type MediaStreamButtonProps = {
-  isStreaming: boolean;
-  onIcon: string;
-  offIcon: string;
-  start: () => Promise<any>;
-  stop: () => any;
-};
-
-const MediaStreamButton = memo(
-  ({ isStreaming, onIcon, offIcon, start, stop }: MediaStreamButtonProps) =>
-    isStreaming ? (
-      <button className={cn("action-button", { active: isStreaming })} onClick={stop}>
-        <span className="material-symbols-outlined">{onIcon}</span>
-      </button>
-    ) : (
-      <button className="action-button" onClick={start}>
-        <span className="material-symbols-outlined">{offIcon}</span>
-      </button>
-    ),
-);
+// Media stream buttons removed
 
 function SidePanel({
   videoRef,
@@ -98,13 +76,12 @@ function SidePanel({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   
   // Control states
-  const videoStreams = [useWebcam(), useScreenCapture()];
+  // Video streaming removed
   const [activeVideoStream, setActiveVideoStream] = useState<MediaStream | null>(null);
-  const [webcam, screenCapture] = videoStreams;
   const [inVolume, setInVolume] = useState(0);
   const [audioRecorder] = useState(() => new AudioRecorder());
   const [muted, setMuted] = useState(false);
-  const renderCanvasRef = useRef<HTMLCanvasElement>(null);
+  // Removed video canvas
   const connectButtonRef = useRef<HTMLButtonElement>(null);
   
   // Feedback state (local to SidePanel)
@@ -144,55 +121,10 @@ function SidePanel({
     };
   }, [connected, client, muted, audioRecorder]);
 
-  useEffect(() => {
-    if (videoRef && videoRef.current) {
-      videoRef.current.srcObject = activeVideoStream;
-    }
-
-    let timeoutId = -1;
-
-    function sendVideoFrame() {
-      const video = videoRef && videoRef.current;
-      const canvas = renderCanvasRef.current;
-
-      if (!video || !canvas) {
-        return;
-      }
-
-      const ctx = canvas.getContext("2d")!;
-      canvas.width = video.videoWidth * 0.25;
-      canvas.height = video.videoHeight * 0.25;
-      if (canvas.width + canvas.height > 0) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const base64 = canvas.toDataURL("image/jpeg", 1.0);
-        const data = base64.slice(base64.indexOf(",") + 1, Infinity);
-        client.sendRealtimeInput([{ mimeType: "image/jpeg", data }]);
-      }
-      if (connected) {
-        timeoutId = window.setTimeout(sendVideoFrame, 1000 / 0.5);
-      }
-    }
-    if (connected && activeVideoStream !== null) {
-      requestAnimationFrame(sendVideoFrame);
-    }
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [connected, activeVideoStream, client, videoRef]);
+  // Video frame capture removed
 
   //handler for swapping from one video-stream to the next
-  const changeStreams = (next?: UseMediaStreamResult) => async () => {
-    if (next) {
-      const mediaStream = await next.start();
-      setActiveVideoStream(mediaStream);
-      onVideoStreamChange(mediaStream);
-    } else {
-      setActiveVideoStream(null);
-      onVideoStreamChange(null);
-    }
-
-    videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
-  };
+  // Stream switcher removed
 
   const submitFeedback = async () => {
     const feedbackUrl = new URL('feedback', serverUrl.replace('ws', 'http')).href;
@@ -257,7 +189,7 @@ function SidePanel({
 
   return (
     <div className={`side-panel ${open ? "open" : ""}`}>
-      <canvas style={{ display: "none" }} ref={renderCanvasRef} />
+      {/* video canvas removed */}
       <header className="top">
         <h2>Console</h2>
         {open ? (
@@ -314,7 +246,7 @@ function SidePanel({
         )}
       </section>
 
-      {/* Control Tray - All buttons moved here */}
+      {/* Control Tray - video controls removed */}
       <section className="control-tray">
         <nav className={cn("actions-nav", { disabled: !connected })}>
           <button
@@ -341,25 +273,6 @@ function SidePanel({
           <div className="action-button no-action outlined">
             <AudioPulse volume={volume} active={connected} hover={false} />
           </div>
-
-          {supportsVideo && (
-            <>
-              <MediaStreamButton
-                isStreaming={screenCapture.isStreaming}
-                start={changeStreams(screenCapture)}
-                stop={changeStreams()}
-                onIcon="cancel_presentation"
-                offIcon="present_to_all"
-              />
-              <MediaStreamButton
-                isStreaming={webcam.isStreaming}
-                start={changeStreams(webcam)}
-                stop={changeStreams()}
-                onIcon="videocam_off"
-                offIcon="videocam"
-              />
-            </>
-          )}
           {children}
         </nav>
 

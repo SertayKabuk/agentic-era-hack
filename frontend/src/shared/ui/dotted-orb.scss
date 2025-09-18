@@ -1,0 +1,119 @@
+.dotted-orb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  text-align: center;
+  color: rgba(244, 247, 255, 0.92);
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.3));
+  animation: orbReveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform: scale(0.7);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.dotted-orb::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  border-radius: 58% 42% 48% 52% / 46% 60% 40% 54%;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0));
+  filter: blur(24px);
+  z-index: -2;
+}
+
+.dotted-orb .orb-wave {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 3px solid rgba(var(--orb-accent-rgb), 0.45);
+  box-shadow: 0 0 18px rgba(var(--orb-accent-rgb), 0.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dotted-orb .orb-wave.outer {
+  animation: wavePulse 3.6s ease-out infinite;
+}
+
+.dotted-orb .orb-wave.middle {
+  animation: wavePulse 3.6s ease-out 1.2s infinite;
+}
+
+.dotted-orb .orb-wave.inner {
+  animation: wavePulse 3.6s ease-out 2.4s infinite;
+}
+
+.dotted-orb::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0));
+  filter: blur(18px);
+  z-index: -1;
+}
+
+.dotted-orb .orb-shell::before {
+  content: "";
+  position: absolute;
+  inset: -5%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0));
+}
+
+.dotted-orb .orb-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  max-width: 260px;
+}
+
+.dotted-orb .orb-tag {
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(244, 247, 255, 0.55);
+}
+
+.dotted-orb .orb-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.dotted-orb .orb-description {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(244, 247, 255, 0.72);
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(0.92); opacity: 0.7; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes orbReveal {
+  0% { transform: scale(0.7); filter: blur(6px); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes wavePulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0.05;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
